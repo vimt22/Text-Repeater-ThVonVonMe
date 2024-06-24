@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Repeater</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+            margin: 0;
+        }
+        
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .form-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+            flex: 1;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9e9e9;
+            border-radius: 5px;
+            word-break: break-word;
+            position: relative;
+            max-height: 200px; /* กำหนดความสูงสูงสุด */
+            overflow-y: auto; /* เปิดใช้งานการเลื่อนในแนวตั้ง */
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            margin: 0;
+        }
+
+        .copy-button {
+            position: sticky;
+            top: 10px;
+            right: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            float: right; /* ทำให้ปุ่มอยู่ทางขวา */
+        }
+
+        .copy-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Repeater</h1>
+        <div class="form-group">
+            <label for="textToRepeat">Repeated Text:</label>
+            <input type="text" id="textToRepeat" placeholder="Enter your text here">
+        </div>
+        <div class="form-group">
+            <label for="repetitionCount">Number of Repetition:</label>
+            <input type="number" id="repetitionCount" placeholder="Enter number of repetitions" value="1" min="1">
+        </div>
+        <div class="form-group">
+            <input type="checkbox" id="addNewLine">
+            <label for="addNewLine">Add New Line</label>
+        </div>
+        <div class="buttons">
+            <button onclick="resetFields()">Reset</button>
+            <button onclick="generateText()">Generate</button>
+        </div>
+        <div class="result" id="result">
+            <!-- ผลลัพธ์จะแสดงที่นี่ -->
+        </div>
+    </div>
+    <script>
+        function generateText() {
+            const text = document.getElementById('textToRepeat').value;
+            const count = document.getElementById('repetitionCount').value;
+            const addNewLine = document.getElementById('addNewLine').checked;
+
+            if (!text) {
+                alert("Please enter the text to repeat.");
+                return;
+            }
+
+            let repeatedText = '';
+            for (let i = 0; i < count; i++) {
+                repeatedText += text + (addNewLine ? '\n' : '');
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<button class="copy-button" onclick="copyToClipboard()">Copy</button><pre>${repeatedText}</pre>`;
+        }
+
+        function resetFields() {
+            document.getElementById('textToRepeat').value = '';
+            document.getElementById('repetitionCount').value = 1;
+            document.getElementById('addNewLine').checked = false;
+            document.getElementById('result').innerHTML = '';
+        }
+
+        function copyToClipboard() {
+            const resultDiv = document.getElementById('result').querySelector('pre');
+            if (resultDiv) {
+                const range = document.createRange();
+                range.selectNode(resultDiv);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+
+                try {
+                    document.execCommand('copy');
+                    alert('Text copied to clipboard!');
+                } catch (err) {
+                    alert('Failed to copy text.');
+                }
+
+                window.getSelection().removeAllRanges();
+            }
+        }
+    </script>
+</body>
+</html>
